@@ -90,7 +90,7 @@ pcl::keypoints::brisk::ScaleSpace::constructPyramid (
 void 
 pcl::keypoints::brisk::ScaleSpace::getKeypoints (
     const int threshold, 
-    std::vector<pcl::PointWithScale, Eigen::aligned_allocator<pcl::PointWithScale> >& keypoints)
+    AlignedPointWithScaleVector& keypoints)
 {
   // make sure keypoints is empty
   //keypoints.resize (0);
@@ -100,7 +100,7 @@ pcl::keypoints::brisk::ScaleSpace::getKeypoints (
   // assign thresholds
   threshold_ = uint8_t (threshold);
   safe_threshold_ = uint8_t (threshold_ * safety_factor_);
-  std::vector<std::vector<pcl::PointUV, Eigen::aligned_allocator<pcl::PointUV> > > agast_points;
+  std::vector<pcl::ExternalVector<pcl::PointUV> > agast_points;
   agast_points.resize (layers_);
 
   // go through the octaves and intra layers and calculate fast corner scores:
@@ -1352,7 +1352,7 @@ pcl::keypoints::brisk::Layer::Layer (const pcl::keypoints::brisk::Layer& layer, 
 // wraps the agast class
 void 
 pcl::keypoints::brisk::Layer::getAgastPoints (
-    uint8_t threshold, std::vector<pcl::PointUV, Eigen::aligned_allocator<pcl::PointUV> > &keypoints)
+    uint8_t threshold, AlignedPointUVVector &keypoints)
 {
   oast_detector_->setThreshold (threshold);
   oast_detector_->detect (&img_[0], keypoints);

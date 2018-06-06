@@ -76,7 +76,7 @@ const int OCTREE_RESOLUTION (1);
 PCLPointCloud2::Ptr
 getCloudFromFile (boost::filesystem::path pcd_path)
 {
-  print_info ("Reading: %s ", pcd_path.c_str ());
+  print_info ("Reading: %s ", pcd_path.string().c_str ());
 
 
   // Read PCD file
@@ -149,7 +149,7 @@ outofcoreProcess (std::vector<boost::filesystem::path> pcd_paths, boost::filesys
   //".oct_idx" extension (currently it must be this extension)
   boost::filesystem::path octree_path_on_disk (root_dir / "tree.oct_idx");
 
-  print_info ("Writing: %s\n", octree_path_on_disk.c_str ());
+  print_info ("Writing: %s\n", octree_path_on_disk.string().c_str ());
   //make sure there isn't an octree there already
   if (boost::filesystem::exists (octree_path_on_disk))
   {
@@ -243,6 +243,11 @@ printHelp (int, char **argv)
   print_info ("\n");
 }
 
+static bool is_pcd_file(const boost::filesystem::path& p)
+{
+    return boost::filesystem::is_regular_file(p) && p.extension() == ".pcd";
+}
+
 int
 main (int argc, char* argv[])
 {
@@ -298,21 +303,50 @@ main (int argc, char* argv[])
     multiresolution = true;
   }
   
-
-  // Parse non-option arguments for pcd files
-  std::vector<int> file_arg_indices = parse_file_extension_argument (argc, argv, ".pcd");
+  std::string pcd_root;
+  parse_argument(argc, argv, "-input_dir", pcd_root);
 
   std::vector<boost::filesystem::path> pcd_paths;
-  for (size_t i = 0; i < file_arg_indices.size (); i++)
-  {
-    boost::filesystem::path pcd_path (argv[file_arg_indices[i]]);
-    if (!boost::filesystem::exists (pcd_path))
-    {
-      PCL_WARN ("File %s doesn't exist", pcd_path.string ().c_str ());
-      continue;
-    }
-    pcd_paths.push_back (pcd_path);
 
+  if (!pcd_root.empty())
+  {
+      boost::filesystem::path root(pcd_root);
+      std::list<boost::filesystem::path> tobe_tested;
+      tobe_tested.push_back(pcd_root);
+      while (tobe_tested.size())
+      {
+          auto r = tobe_tested.front();
+          tobe_tested.pop_front();
+          for (auto& entry : boost::make_iterator_range(boost::filesystem::directory_iterator(r), {}))
+          {
+              auto p = entry.path();
+              if (boost::filesystem::is_directory(p))
+              {
+                  tobe_tested.push_back(p);
+              }
+              else if (is_pcd_file(p))
+              {
+                  pcd_paths.push_back(p);
+              }
+          }
+      }
+  }
+  else
+  {
+      // Parse non-option arguments for pcd files
+      std::vector<int> file_arg_indices = parse_file_extension_argument(argc, argv, ".pcd");
+
+      for (size_t i = 0; i < file_arg_indices.size(); i++)
+      {
+          boost::filesystem::path pcd_path(argv[file_arg_indices[i]]);
+          if (!boost::filesystem::exists(pcd_path))
+          {
+              PCL_WARN("File %s doesn't exist", pcd_path.string().c_str());
+              continue;
+          }
+          pcd_paths.push_back(pcd_path);
+
+      }
   }
 
   // Check if we should process any files

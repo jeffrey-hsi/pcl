@@ -90,7 +90,7 @@ typedef OutofcoreOctreeBaseNode<OutofcoreOctreeDiskContainer<PointT>, PointT> oc
 //typedef octree_base<OutofcoreOctreeDiskContainer<PointT> , PointT> octree_disk;
 typedef boost::shared_ptr<octree_disk> OctreeDiskPtr;
 //typedef octree_base_node<octree_disk_container<PointT> , PointT> octree_disk_node;
-typedef Eigen::aligned_allocator<PointT> AlignedPointT;
+typedef pcl::ExternalVector<PointT> AlignedPointT;
 
 // VTK
 #include <vtkActor.h>
@@ -199,6 +199,7 @@ public:
     {
       Eigen::Vector3d min (cloud->getBoundingBoxMin ());
       Eigen::Vector3d max (cloud->getBoundingBoxMax ());
+      PCL_ERROR("[Reseting camera : %.11lf, %.11lf, %.11lf, %.11lf\n", min.x(), max.x(), min.y(), max.y(), min.z(), max.z());
       renderer->ResetCamera (min.x (), max.x (), min.y (), max.y (), min.z (), max.z ());
     }
   }

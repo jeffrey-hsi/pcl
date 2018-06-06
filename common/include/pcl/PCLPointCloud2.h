@@ -13,6 +13,7 @@
 // Include the correct Header path here
 #include <pcl/PCLHeader.h>
 #include <pcl/PCLPointField.h>
+#include <pcl/external_vector.h>
 
 namespace pcl
 {
@@ -31,6 +32,7 @@ namespace pcl
 #error "unable to determine system endianness"
 #endif
     }
+    typedef pcl::ExternalVector<pcl::uint8_t> DataVector;
 
     ::pcl::PCLHeader header;
 
@@ -43,7 +45,7 @@ namespace pcl
     pcl::uint32_t point_step;
     pcl::uint32_t row_step;
 
-    std::vector<pcl::uint8_t> data;
+    DataVector data;
 
     pcl::uint8_t is_dense;
 

@@ -48,6 +48,12 @@
 #include <pcl/PCLHeader.h>
 #include <pcl/exceptions.h>
 #include <pcl/point_traits.h>
+#include <pcl/pagefile_allocator.h>
+#include <pcl/external_vector.h>
+
+#ifdef WIN32
+#include <list>
+#endif
 
 namespace pcl
 {
@@ -134,6 +140,73 @@ namespace pcl
     template <typename PointT> boost::shared_ptr<pcl::MsgFieldMap>&
     getMapping (pcl::PointCloud<PointT>& p);
   } // namespace detail
+
+  namespace detail
+  {
+
+  extern void* pcl_mmap(std::size_t size);
+  extern void pcl_munmap(void* p);
+
+  template<class T>
+  class pagefile_aligned_allocator : public Eigen::aligned_allocator<T>
+  {
+  public:
+      typedef std::size_t     size_type;
+      typedef std::ptrdiff_t  difference_type;
+      typedef T*              pointer;
+      typedef const T*        const_pointer;
+      typedef T&              reference;
+      typedef const T&        const_reference;
+      typedef T               value_type;
+
+      template<class U>
+      struct rebind
+      {
+          typedef pagefile_aligned_allocator<U> other;
+      };
+
+      pagefile_aligned_allocator() : Eigen::aligned_allocator<T>() {}
+
+      pagefile_aligned_allocator(const pagefile_aligned_allocator& other) : Eigen::aligned_allocator<T>(other) {}
+
+      template<class U>
+      pagefile_aligned_allocator(const pagefile_aligned_allocator<U>& other) : Eigen::aligned_allocator<T>(other) {}
+
+      ~pagefile_aligned_allocator() {}
+
+      pointer allocate(size_type num, const void* /*hint*/ = 0)
+      {
+#ifdef WIN32
+          if (num * sizeof(T) < 10 * 1024 * 1024)
+          {
+#endif
+              Eigen::internal::check_size_for_overflow<T>(num);
+              return static_cast<pointer>(Eigen::internal::aligned_malloc(num * sizeof(T)));
+#ifdef WIN32
+          }
+          size_type size = num * sizeof(T);
+          void* map = pcl_mmap(size);
+          _allocations.push_back(map);
+          return static_cast<pointer>(map);
+#endif
+      }
+
+      void deallocate(pointer p, size_type /*num*/)
+      {
+#ifdef WIN32
+          if (std::find(_allocations.begin(), _allocations.end(), p) != _allocations.end())
+          {
+              _allocations.remove(p);
+              pcl_munmap(p);
+          }
+          else
+#endif
+              Eigen::internal::aligned_free(p);
+      }
+  private:
+      std::list<void*> _allocations;
+  };
+  }
 
   /** \brief PointCloud represents the base class in PCL for storing collections of 3D points.
     *
@@ -406,8 +479,10 @@ namespace pcl
       /** \brief The point cloud header. It contains information about the acquisition time. */
       pcl::PCLHeader header;
 
+      typedef ExternalVector<PointT> VectorType;
+
       /** \brief The point data. */
-      std::vector<PointT, Eigen::aligned_allocator<PointT> > points;
+      VectorType points;
 
       /** \brief The point cloud width (if organized as an image-structure). */
       uint32_t width;
@@ -423,7 +498,6 @@ namespace pcl
       Eigen::Quaternionf sensor_orientation_;
 
       typedef PointT PointType;  // Make the template class available from the outside
-      typedef std::vector<PointT, Eigen::aligned_allocator<PointT> > VectorType;
       typedef std::vector<PointCloud<PointT>, Eigen::aligned_allocator<PointCloud<PointT> > > CloudVectorType;
       typedef boost::shared_ptr<PointCloud<PointT> > Ptr;
       typedef boost::shared_ptr<const PointCloud<PointT> > ConstPtr;

@@ -185,7 +185,7 @@ namespace pcl
         typedef boost::shared_ptr<PointCloud> PointCloudPtr;
         typedef boost::shared_ptr<const PointCloud> PointCloudConstPtr;
 
-        typedef std::vector<PointT, Eigen::aligned_allocator<PointT> > AlignedPointTVector;
+        typedef ExternalVector<PointT> AlignedPointTVector;
 
         // Constructors
         // -----------------------------------------------------------------------

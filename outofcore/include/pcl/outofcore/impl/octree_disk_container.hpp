@@ -197,6 +197,7 @@ namespace pcl
     template<typename PointT> PointT
     OutofcoreOctreeDiskContainer<PointT>::operator[] (uint64_t idx) const
     {
+      PCL_ERROR("[pcl::outofcore::OutofcoreOctreeDiskContainer] Not implemented for use with PCL library\n");
       PCL_THROW_EXCEPTION (PCLException, "[pcl::outofcore::OutofcoreOctreeDiskContainer] Not implemented for use with PCL library\n");
       
       //if the index is on disk

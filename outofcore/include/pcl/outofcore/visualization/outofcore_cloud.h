@@ -47,7 +47,7 @@ class OutofcoreCloud : public Object
 //    typedef pcl::outofcore::OutofcoreBreadthFirstIterator<> OctreeBreadthFirstIterator;
 
     typedef boost::shared_ptr<OctreeDisk> OctreeDiskPtr;
-    typedef Eigen::aligned_allocator<PointT> AlignedPointT;
+    typedef pcl::ExternalVector<PointT> AlignedPointT;
 
 
 

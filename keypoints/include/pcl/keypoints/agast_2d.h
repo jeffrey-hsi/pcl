@@ -65,6 +65,8 @@ namespace pcl
           typedef boost::shared_ptr<AbstractAgastDetector> Ptr;
           typedef boost::shared_ptr<const AbstractAgastDetector> ConstPtr;
 
+          typedef pcl::ExternalVector<pcl::PointUV> AlignedPointUVVector;
+
           /** \brief Constructor. 
             * \param[in] width the width of the image to process
             * \param[in] height the height of the image to process
@@ -172,14 +174,14 @@ namespace pcl
             */
           virtual void 
           detect (const unsigned char* im, 
-                  std::vector<pcl::PointUV, Eigen::aligned_allocator<pcl::PointUV> > &corners_all) const = 0;
+              AlignedPointUVVector &corners_all) const = 0;
 
           /** \brief Detects points of interest (i.e., keypoints) in the given image
             * \param[in] im the image to detect keypoints in 
             */
           virtual void 
           detect (const float* im, 
-                  std::vector<pcl::PointUV, Eigen::aligned_allocator<pcl::PointUV> > &) const = 0;
+              AlignedPointUVVector &) const = 0;
 
         protected:
 
@@ -225,7 +227,7 @@ namespace pcl
             */
           void 
           computeCornerScores (const unsigned char* im, 
-                               const std::vector<pcl::PointUV, Eigen::aligned_allocator<pcl::PointUV> > & corners_all, 
+                               const AlignedPointUVVector & corners_all,
                                std::vector<ScoreIndex> & scores);
 
           /** \brief Computes corner scores for the specified points. 
@@ -235,7 +237,7 @@ namespace pcl
             */
           void 
           computeCornerScores (const float* im, 
-                               const std::vector<pcl::PointUV, Eigen::aligned_allocator<pcl::PointUV> > & corners_all, 
+                               const AlignedPointUVVector & corners_all,
                                std::vector<ScoreIndex> & scores);
 
           /** \brief Width of the image to process. */
@@ -302,14 +304,14 @@ namespace pcl
             * \param[out] corners_all the resultant set of keypoints detected
             */
           void 
-          detect (const unsigned char* im, std::vector<pcl::PointUV, Eigen::aligned_allocator<pcl::PointUV> > &corners_all) const;
+          detect (const unsigned char* im, AlignedPointUVVector &corners_all) const;
 
           /** \brief Detects points of interest (i.e., keypoints) in the given image
             * \param[in] im the image to detect keypoints in 
             * \param[out] corners_all the resultant set of keypoints detected
             */
           void 
-          detect (const float* im, std::vector<pcl::PointUV, Eigen::aligned_allocator<pcl::PointUV> > &corners_all) const;
+          detect (const float* im, AlignedPointUVVector &corners_all) const;
 
         protected:
           /** \brief Initializes the sample pattern. */
@@ -384,14 +386,14 @@ namespace pcl
             * \param[out] corners_all the resultant set of keypoints detected
             */
           void 
-          detect (const unsigned char* im, std::vector<pcl::PointUV, Eigen::aligned_allocator<pcl::PointUV> > &corners_all) const;
+          detect (const unsigned char* im, AlignedPointUVVector &corners_all) const;
 
           /** \brief Detects points of interest (i.e., keypoints) in the given image
             * \param[in] im the image to detect keypoints in 
             * \param[out] corners_all the resultant set of keypoints detected
             */
           void 
-          detect (const float* im, std::vector<pcl::PointUV, Eigen::aligned_allocator<pcl::PointUV> > &corners_all) const;
+          detect (const float* im, AlignedPointUVVector &corners_all) const;
 
         protected:
           /** \brief Initializes the sample pattern. */
@@ -462,14 +464,14 @@ namespace pcl
             * \param[out] corners_all the resultant set of keypoints detected
             */
           void 
-          detect (const unsigned char* im, std::vector<pcl::PointUV, Eigen::aligned_allocator<pcl::PointUV> > &corners_all) const;
+          detect (const unsigned char* im, AlignedPointUVVector &corners_all) const;
 
           /** \brief Detects points of interest (i.e., keypoints) in the given image
             * \param[in] im the image to detect keypoints in 
             * \param[out] corners_all the resultant set of keypoints detected
             */
           void 
-          detect (const float* im, std::vector<pcl::PointUV, Eigen::aligned_allocator<pcl::PointUV> > &corners_all) const;
+          detect (const float* im, AlignedPointUVVector &corners_all) const;
 
         protected:
           /** \brief Initializes the sample pattern. */

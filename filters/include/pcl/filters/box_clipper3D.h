@@ -55,6 +55,8 @@ namespace pcl
       typedef boost::shared_ptr< BoxClipper3D<PointT> > Ptr;
       typedef boost::shared_ptr< const BoxClipper3D<PointT> > ConstPtr;
 
+      typedef ExternalVector<PointT> PointVector;
+      typedef const ExternalVector<PointT> ConstPointVector;
 
       /**
         * \author Suat Gedikli <gedikli@willowgarage.com>
@@ -97,10 +99,10 @@ namespace pcl
       clipLineSegment3D (PointT& from, PointT& to) const;
 
       virtual void
-      clipPlanarPolygon3D (std::vector<PointT, Eigen::aligned_allocator<PointT> >& polygon) const;
+      clipPlanarPolygon3D (PointVector& polygon) const;
 
       virtual void
-      clipPlanarPolygon3D (const std::vector<PointT, Eigen::aligned_allocator<PointT> >& polygon, std::vector<PointT, Eigen::aligned_allocator<PointT> >& clipped_polygon) const;
+      clipPlanarPolygon3D (const PointVector& polygon, PointVector& clipped_polygon) const;
 
       virtual void
       clipPointCloud3D (const pcl::PointCloud<PointT> &cloud_in, std::vector<int>& clipped, const std::vector<int>& indices = std::vector<int> ()) const;

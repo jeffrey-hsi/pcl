@@ -254,6 +254,7 @@ namespace pcl
             static const int TWOTHIRDSAMPLE = 1;
           };
 
+          typedef pcl::ExternalVector<pcl::PointUV> AlignedPointUVVector;
           /** \brief Constructor.
             * \param[in] img input image
             * \param[in] width image width
@@ -276,7 +277,7 @@ namespace pcl
             * \param[out] keypoints the AGAST keypoints
             */
           void 
-          getAgastPoints (uint8_t threshold, std::vector<pcl::PointUV, Eigen::aligned_allocator<pcl::PointUV> > &keypoints);
+          getAgastPoints (uint8_t threshold, AlignedPointUVVector &keypoints);
 
           // get scores - attention, this is in layer coordinates, not scale=1 coordinates!
           /** \brief Get the AGAST keypoint score for a given pixel using a threshold
@@ -392,6 +393,8 @@ namespace pcl
       class PCL_EXPORTS ScaleSpace
       {
         public:
+          typedef pcl::ExternalVector<pcl::PointWithScale> AlignedPointWithScaleVector;
+
           /** \brief Constructor. Specify the number of octaves.
             * \param[in] octaves the number of octaves (default: 3)
             */
@@ -413,7 +416,7 @@ namespace pcl
             */
           void 
           getKeypoints (const int threshold, 
-                        std::vector<pcl::PointWithScale, Eigen::aligned_allocator<pcl::PointWithScale> >  &keypoints);
+              AlignedPointWithScaleVector &keypoints);
 
         protected:
           /** Nonmax suppression. */

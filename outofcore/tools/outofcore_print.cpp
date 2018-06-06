@@ -82,7 +82,7 @@ typedef OutofcoreOctreeBaseNode<> OctreeDiskNode;
 typedef OutofcoreBreadthFirstIterator<> OctreeBreadthFirstIterator;
 typedef OutofcoreDepthFirstIterator<> OctreeDepthFirstIterator;
 
-typedef Eigen::aligned_allocator<PointT> AlignedPointT;
+typedef pcl::ExternalVector<PointT> AlignedPointT;
 
 void
 printDepth(size_t depth)

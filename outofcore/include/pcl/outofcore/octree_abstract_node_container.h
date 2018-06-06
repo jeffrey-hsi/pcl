@@ -43,6 +43,7 @@
 #include <string>
 
 #include <pcl/outofcore/boost.h>
+#include <pcl/external_vector.h>
 
 namespace pcl
 {
@@ -53,7 +54,7 @@ namespace pcl
     {
 
       public:
-        typedef std::vector<PointT, Eigen::aligned_allocator<PointT> > AlignedPointTVector;
+        typedef ExternalVector<PointT> AlignedPointTVector;
 
         OutofcoreAbstractNodeContainer () 
           : container_ ()

@@ -882,7 +882,7 @@ namespace pcl
       //if already has 8 children, return
       if (children_[idx] || (num_children_ == 8))
       {
-        PCL_ERROR ("[pcl::outofcore::OutofcoreOctreeBaseNode::createChild] Not allowed to create a 9th child of %s",this->node_metadata_->getMetadataFilename ().c_str ());
+        PCL_ERROR ("[pcl::outofcore::OutofcoreOctreeBaseNode::createChild] Not allowed to create a 9th child of %s\n",this->node_metadata_->getMetadataFilename ().c_str ());
         return;
       }
 
@@ -1578,7 +1578,7 @@ namespace pcl
               }
               else
               {
-                PCL_DEBUG ("[pcl::outofcore::queryBBIncludes] Point %.2lf %.2lf %.2lf not in bounding box %.2lf %.2lf %.2lf", p.x, p.y, p.z, min_bb[0], min_bb[1], min_bb[2], max_bb[0], max_bb[1], max_bb[2]);
+                PCL_DEBUG ("[pcl::outofcore::queryBBIncludes] Point %.2lf %.2lf %.2lf not in bounding box %.2lf %.2lf %.2lf\n", p.x, p.y, p.z, min_bb[0], min_bb[1], min_bb[2], max_bb[0], max_bb[1], max_bb[2]);
               }
             }
           }
@@ -1915,6 +1915,7 @@ namespace pcl
     template<typename ContainerT, typename PointT> int
     OutofcoreOctreeBaseNode<ContainerT, PointT>::read (pcl::PCLPointCloud2::Ptr &output_cloud)
     {
+        PCL_DEBUG("[pcl::outofcore::OutofcoreOctreeBaseNode::%s]\n", __FUNCTION__);
       return (this->payload_->read (output_cloud));
     }
 
@@ -1923,7 +1924,7 @@ namespace pcl
     template<typename ContainerT, typename PointT> OutofcoreOctreeBaseNode<ContainerT, PointT>*
     OutofcoreOctreeBaseNode<ContainerT, PointT>::getChildPtr (size_t index_arg) const
     {
-      PCL_DEBUG ("[pcl::outofcore::OutofcoreOctreeBaseNode::%s] %d", __FUNCTION__, index_arg);
+      //PCL_DEBUG ("[pcl::outofcore::OutofcoreOctreeBaseNode::%s] %d\n", __FUNCTION__, index_arg);
       return (children_[index_arg]);
     }
 
@@ -1955,7 +1956,7 @@ namespace pcl
     template<typename ContainerT, typename PointT> void
     OutofcoreOctreeBaseNode<ContainerT, PointT>::loadFromFile (const boost::filesystem::path& path, OutofcoreOctreeBaseNode<ContainerT, PointT>* super)
     {
-      PCL_DEBUG ("[pcl:outofcore::OutofcoreOctreeBaseNode] Loading metadata from %s\n", path.filename ().c_str ());
+      PCL_DEBUG ("[pcl:outofcore::OutofcoreOctreeBaseNode] Loading metadata from %s\n", path.filename ().string().c_str ());
       node_metadata_->loadMetadataFromDisk (path);
 
       //this shouldn't be part of 'loadFromFile'

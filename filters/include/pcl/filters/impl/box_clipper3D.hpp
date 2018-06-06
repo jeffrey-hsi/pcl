@@ -183,7 +183,7 @@ pcl::BoxClipper3D<PointT>::clipLineSegment3D (PointT& point1, PointT& point2) co
  * @attention untested code
  */
 template<typename PointT> void
-pcl::BoxClipper3D<PointT>::clipPlanarPolygon3D (const std::vector<PointT, Eigen::aligned_allocator<PointT> >& polygon, std::vector<PointT, Eigen::aligned_allocator<PointT> >& clipped_polygon) const
+pcl::BoxClipper3D<PointT>::clipPlanarPolygon3D (const pcl::BoxClipper3D<PointT>::PointVector& polygon, pcl::BoxClipper3D<PointT>::PointVector& clipped_polygon) const
 {
   // not implemented -> clip everything
   clipped_polygon.clear ();
@@ -194,7 +194,7 @@ pcl::BoxClipper3D<PointT>::clipPlanarPolygon3D (const std::vector<PointT, Eigen:
  * @attention untested code
  */
 template<typename PointT> void
-pcl::BoxClipper3D<PointT>::clipPlanarPolygon3D (std::vector<PointT, Eigen::aligned_allocator<PointT> >& polygon) const
+pcl::BoxClipper3D<PointT>::clipPlanarPolygon3D (pcl::BoxClipper3D<PointT>::PointVector& polygon) const
 {
   // not implemented -> clip everything
   polygon.clear ();

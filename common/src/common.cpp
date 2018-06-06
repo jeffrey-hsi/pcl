@@ -39,6 +39,12 @@
 #include <pcl/common/common.h>
 #include <pcl/console/print.h>
 
+
+#ifdef WIN32
+#include <list>
+#include <Windows.h>
+#endif
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 void 
 pcl::getMinMax (const pcl::PCLPointCloud2 &cloud, int,
@@ -84,3 +90,19 @@ pcl::getMeanStdDev (const std::vector<float> &values, double &mean, double &stdd
   stddev = sqrt (variance);
 }
 
+void* pcl::detail::pcl_mmap(std::size_t size)
+{
+    DWORD sizeHi = (((int64_t)size >> 32) & 0xFFFFFFFF);
+    DWORD sizeLo = (size & 0xFFFFFFFF);
+    HANDLE hm = ::CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE | SEC_COMMIT, sizeHi, sizeLo, NULL);
+    auto E1 = ::GetLastError();
+    void* p = ::MapViewOfFile(hm, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, size);
+    auto E2 = ::GetLastError();
+    ::CloseHandle(hm);
+    return p;
+}
+
+void pcl::detail::pcl_munmap(void* p)
+{
+    ::UnmapViewOfFile(p);
+}

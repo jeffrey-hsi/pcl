@@ -851,7 +851,7 @@ pcl::PCDReader::read (const std::string &file_name, pcl::PCLPointCloud2 &cloud,
 #ifdef _WIN32
     // As we don't know the real size of data (compressed or not), 
     // we set dwMaximumSizeHigh = dwMaximumSizeLow = 0 so as to map the whole file
-    HANDLE fm = CreateFileMapping ((HANDLE) _get_osfhandle (fd), NULL, PAGE_READONLY, 0, 0, NULL);
+    HANDLE fm = CreateFileMapping ((HANDLE) _get_osfhandle (fd), NULL, PAGE_READONLY | SEC_COMMIT, 0, 0, NULL);
     // As we don't know the real size of data (compressed or not), 
     // we set dwNumberOfBytesToMap = 0 so as to map the whole file
     char *map = static_cast<char*>(MapViewOfFile (fm, FILE_MAP_READ, 0, 0, 0));
@@ -889,6 +889,12 @@ pcl::PCDReader::read (const std::string &file_name, pcl::PCLPointCloud2 &cloud,
         UnmapViewOfFile (map);
         data_size = compressed_size + data_idx + 8;
         map = static_cast<char*>(MapViewOfFile (fm, FILE_MAP_READ, 0, 0, data_size));
+        if (NULL == map)
+        {
+            PCL_ERROR("[pcl::PCDReader::read] Error mapping view of file for decompress err = %d\n", GetLastError());
+            CloseHandle(fm);
+            return (-1);
+        }
 #else
         munmap (map, data_size);
         data_size = compressed_size + data_idx + 8;

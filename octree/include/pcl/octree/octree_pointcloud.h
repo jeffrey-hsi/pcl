@@ -126,8 +126,8 @@ namespace pcl
         typedef boost::shared_ptr<const OctreePointCloud<PointT, LeafContainerT, BranchContainerT, OctreeT> > ConstPtr;
 
         // Eigen aligned allocator
-        typedef std::vector<PointT, Eigen::aligned_allocator<PointT> > AlignedPointTVector;
-        typedef std::vector<PointXYZ, Eigen::aligned_allocator<PointXYZ> > AlignedPointXYZVector;
+        typedef ExternalVector<PointT> AlignedPointTVector;
+        typedef ExternalVector<PointXYZ> AlignedPointXYZVector;
 
         /** \brief Provide a pointer to the input data set.
          * \param[in] cloud_arg the const boost shared pointer to a PointCloud message

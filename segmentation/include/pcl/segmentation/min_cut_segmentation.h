@@ -171,7 +171,7 @@ namespace pcl
       setNumberOfNeighbours (unsigned int neighbour_number);
 
       /** \brief Returns the points that must belong to foreground. */
-      std::vector<PointT, Eigen::aligned_allocator<PointT> >
+      ExternalVector<PointT>
       getForegroundPoints () const;
 
       /** \brief Allows to specify points which are known to be the points of the object.
@@ -181,7 +181,7 @@ namespace pcl
       setForegroundPoints (typename pcl::PointCloud<PointT>::Ptr foreground_points);
 
       /** \brief Returns the points that must belong to background. */
-      std::vector<PointT, Eigen::aligned_allocator<PointT> >
+      ExternalVector<PointT>
       getBackgroundPoints () const;
 
       /** \brief Allows to specify points which are known to be the points of the background.
@@ -285,10 +285,10 @@ namespace pcl
       bool graph_is_valid_;
 
       /** \brief Stores the points that are known to be in the foreground. */
-      std::vector<PointT, Eigen::aligned_allocator<PointT> > foreground_points_;
+      ExternalVector<PointT> foreground_points_;
 
       /** \brief Stores the points that are known to be in the background. */
-      std::vector<PointT, Eigen::aligned_allocator<PointT> > background_points_;
+      ExternalVector<PointT> background_points_;
 
       /** \brief After the segmentation it will contain the segments. */
       std::vector <pcl::PointIndices> clusters_;

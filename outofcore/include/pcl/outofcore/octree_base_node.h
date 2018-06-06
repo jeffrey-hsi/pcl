@@ -107,7 +107,7 @@ namespace pcl
         typedef OutofcoreOctreeBase<OutofcoreOctreeDiskContainer < PointT > , PointT > octree_disk;
         typedef OutofcoreOctreeBaseNode<OutofcoreOctreeDiskContainer < PointT > , PointT > octree_disk_node;
 
-        typedef std::vector<PointT, Eigen::aligned_allocator<PointT> > AlignedPointTVector;
+        typedef ExternalVector<PointT> AlignedPointTVector;
 
         typedef pcl::octree::node_type_t node_type_t;
 

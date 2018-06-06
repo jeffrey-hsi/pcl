@@ -388,7 +388,7 @@ pcl::SupervoxelClustering<PointT>::selectInitialSupervoxelSeeds (std::vector<int
   seed_octree.setInputCloud (voxel_centroid_cloud_);
   seed_octree.addPointsFromInputCloud ();
  // std::cout << "Size of octree ="<<seed_octree.getLeafCount ()<<"\n";
-  std::vector<PointT, Eigen::aligned_allocator<PointT> > voxel_centers; 
+  ExternalVector<PointT> voxel_centers;
   int num_seeds = seed_octree.getOccupiedVoxelCenters(voxel_centers); 
   //std::cout << "Number of seed points before filtering="<<voxel_centers.size ()<<std::endl;
   

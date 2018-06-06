@@ -70,7 +70,7 @@ namespace pcl
         typedef boost::shared_ptr<const OctreePointCloudSearch<PointT, LeafContainerT, BranchContainerT> > ConstPtr;
 
         // Eigen aligned allocator
-        typedef std::vector<PointT, Eigen::aligned_allocator<PointT> > AlignedPointTVector;
+        typedef ExternalVector<PointT> AlignedPointTVector;
 
         typedef OctreePointCloud<PointT, LeafContainerT, BranchContainerT> OctreeT;
         typedef typename OctreeT::LeafNode LeafNode;
