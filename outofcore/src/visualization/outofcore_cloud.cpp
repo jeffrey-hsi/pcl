@@ -62,9 +62,9 @@ OutofcoreCloud::pcdReaderThread ()
   while (true)
   {
     //{
-      //boost::mutex::scoped_lock lock (pcd_queue_mutex);
+      boost::mutex::scoped_lock lock (pcd_queue_mutex);
       //pcd_queue_mutex.wait (lock);
-      pcd_queue_ready.wait(pcd_queue_mutex);
+      pcd_queue_ready.wait(lock);
     //}
     //pcd_queue_ready
 
@@ -84,6 +84,7 @@ OutofcoreCloud::pcdReaderThread ()
 
         pcl::PCLPointCloud2Ptr cloud (new pcl::PCLPointCloud2);
 
+        PCL_VERBOSE("Outofcore : loading pcd file %s\n", pcd_queue_item->pcd_file.c_str());
         pcl::io::loadPCDFile (pcd_queue_item->pcd_file, *cloud);
         pcl::io::pointCloudTovtkPolyData (cloud, cloud_data);
 
@@ -124,6 +125,7 @@ OutofcoreCloud::OutofcoreCloud (std::string name, boost::filesystem::path& tree_
   // Create the pcd reader thread once for all outofcore nodes
   if (OutofcoreCloud::pcd_reader_thread.get() == NULL)
   {
+      PCL_VERBOSE("Outofcore : starting reading thread\n");
 //    OutofcoreCloud::pcd_reader_thread = boost::shared_ptr<boost::thread>(new boost::thread(&OutofcoreCloud::pcdReaderThread, this));
     OutofcoreCloud::pcd_reader_thread = boost::shared_ptr<boost::thread>(new boost::thread(&OutofcoreCloud::pcdReaderThread));
   }
@@ -235,6 +237,7 @@ OutofcoreCloud::render (vtkRenderer* renderer)
 //      std::cout << coverage << "-" << pcd_file << endl;//" : " << (coverage > (size[0] * size[1])) << endl;
 
       std::string pcd_file = node->getPCDFilename ().string ();
+      PCL_VERBOSE("Outofcore : rendering node %s\n", pcd_file.c_str());
 
       cloud_data_cache_mutex.lock();
 
@@ -244,6 +247,7 @@ OutofcoreCloud::render (vtkRenderer* renderer)
       if (pcd_queue_mutex.try_lock())
       {
         pcd_queue.push(pcd_queue_item);
+        pcd_queue_ready.notify_one();
         pcd_queue_mutex.unlock();
       }
 
@@ -292,7 +296,7 @@ OutofcoreCloud::render (vtkRenderer* renderer)
     }
 
     // We're done culling, notify the pcd_reader thread the queue is read
-    pcd_queue_ready.notify_one();
+    //pcd_queue_ready.notify_one();
 
     std::vector<vtkActor*> actors_to_remove;
     {
